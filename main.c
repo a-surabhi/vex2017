@@ -68,8 +68,6 @@
 #include "lib/basic_op.c"
 #include "lib/advanced_op.c"
 #include "lib/sensor_op.c"
-#include "lib/chassis_control.c"
-#include "lib/armclaw_control.c"
 #include "autonomous/autonomous_1.c"
 #include "autonomous/autonomous_2.c"
 #include "autonomous/autonomous_3.c"

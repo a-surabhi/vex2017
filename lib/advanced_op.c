@@ -74,9 +74,9 @@ void _ensureMoveStraight() {
 void _ensureMovementTaskDone() {
 	if (_activeTaskList[MovementTask]) {
 		_ensureMoveStraight();
-		int leftWheelEncoder = getRightWheelEncoderValue();
-		if ((_rightWheelEncoderTargetValue > 0 && leftWheelEncoder > _rightWheelEncoderTargetValue) ||
-			(_rightWheelEncoderTargetValue < 0 && leftWheelEncoder < _rightWheelEncoderTargetValue)) {
+		int wheelEncoder = getWheelEncoderValue();
+		if ((_wheelEncoderTargetValue > 0 && wheelEncoder > _wheelEncoderTargetValue) ||
+			(_wheelEncoderTargetValue < 0 && wheelEncoder < _wheelEncoderTargetValue)) {
 			_completeMovementTask();
 		}
 	}
