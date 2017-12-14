@@ -1,5 +1,5 @@
 #pragma config(Sensor, in1,    Gyro,           sensorGyro)
-#pragma config(Sensor, in2,    ArmPotentiometer, sensorPotentiometer)
+#pragma config(Sensor, in2,    ForkPotentiometer, sensorPotentiometer)
 #pragma config(Sensor, dgtl1,  Jumper1,        sensorTouch)
 #pragma config(Sensor, dgtl2,  Jumper2,        sensorTouch)
 #pragma config(Sensor, dgtl3,  Jumper3,        sensorTouch)
@@ -36,7 +36,7 @@
 // Select Download method as "competition"
 #pragma competitionControl(Competition)
 
-#define CLAW_MOTOR_SPEED 105
+#define FORK_MOTOR_SPEED 105
 #define ROTATE_MOTOR_SPEED 55
 #define ROTATE_MOTOR_SPEED_HALF 28
 #define LIFT_MOTOR_SPEED 120
@@ -44,22 +44,11 @@
 #define LIFT_MOTOR_SPEED_THIRD 30
 #define WHEEL_MOTOR_SPEED 120
 
-#define CLAW_POSITIONING_THRESHOLD 20
-#define ARM_POSITIONING_THRESHOLD 20
-#define CLAW_STOPPING_THRESHOLD 10
+#define FORK_POSITIONING_THRESHOLD 20
 #define ORIENTATION_THRESHOLD 10
 
-#define CLAW_CLOSED_POSITION 1100
-#define CLAW_WILD_OPEN_POSITION 1970
-#define CLAW_NARROW_OPEN_POSITION 1900
-#define CLAW_OPEN_TO_PUSH_POSITION 2500
-
-#define ARM_FLOOR_POSITION 3000
-#define ARM_BELOW_FENCE_POSITION 2100
-#define ARM_CEILING_POSITION 1120
-#define ARM_HIGH_FENCE_POSITION 1215
-//#define ARM_LOW_FENCE_POSITION 1688
-#define ARM_LOW_FENCE_POSITION 1190
+#define FORK_FLOOR_POSITION 3000
+#define FORK_CEILING_POSITION 1120
 
 #define DISTANCE_TO_ENCODER_VALUE_BASE_FACTOR 10.5
 
@@ -68,6 +57,7 @@
 #include "lib/basic_op.c"
 #include "lib/advanced_op.c"
 #include "lib/sensor_op.c"
+#include "lib/chassis_control.c"
 #include "autonomous/autonomous_1.c"
 #include "autonomous/autonomous_2.c"
 #include "autonomous/autonomous_3.c"
@@ -105,9 +95,6 @@ void pre_auton()
 
 void runAutonomous(bool withSlewControl) {
     writeDebugStreamLine("entering into autonomous now");
-    if (withSlewControl) {
-        startTask(MotorAccelerateSlewRateTask);
-    }
 
     int jumperSetting = getJumperSetting();
     if (jumperSetting == 1) {
@@ -165,7 +152,7 @@ task usercontrol() {
         //tower moves up and down with range controls
         motor[RT_LT2] = -vexRT[Ch2];
         motor[LT_RT2] = -vexRT[Ch2];
-  
+
         //claw moves with buttons
         if (vexRT[Btn6D] == 1) {
             motor(CM)= -88;
@@ -175,12 +162,12 @@ task usercontrol() {
             motor(CT) = -88;
         } else if(vexRT[Btn5U] == 1) {
             motor(CT) = 88;
-        } else { 
+        } else {
             //signaling no motion for claw
             motor[CM]= 0;
             motor[CT]= 0;
         }
-        
+
         //mobile goal intake moves with buttons on main control
         int nospeed = 0;
         if (vexRT[Btn6UXmtr2]== 1) {
@@ -195,7 +182,7 @@ task usercontrol() {
             motor[MGI]= nospeed;
             motor[MGI1]= nospeed;
         }
-        
+
         //rotation for chassis at slower speed
         int dr_rotateSpeed = 0;
         if (vexRT[Btn5DXmtr2] == 1) {
@@ -203,7 +190,7 @@ task usercontrol() {
         } else if (vexRT[Btn5UXmtr2] == 1) {
             dr_rotateSpeed = 64;
         }
-        
+
         //chassis moves with range controls on main control
         motor[LF] = vexRT[Ch2Xmtr2] + vexRT[Ch1Xmtr2] + dr_rotateSpeed;
         motor[LB] = vexRT[Ch2Xmtr2] + vexRT[Ch1Xmtr2] + dr_rotateSpeed;

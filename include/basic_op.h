@@ -5,6 +5,7 @@ void sendToWheelMotor(int leftSpeed, int rightSpeed);
 void rotateBot(int speed);
 void stopBotMovement();
 
-void sendToLiftMotor(int speed);
+void stopForkMovement();
+void sendToForkMotor(int speed);
 
 #endif

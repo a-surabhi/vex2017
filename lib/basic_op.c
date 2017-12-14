@@ -1,5 +1,5 @@
 #include "../include/basic_op.h"
-#include "slew_control.c"
+//#include "slew_control.c"
 
 task triggerAutonomous();
 void runAutonomous(bool withSlewControl);
@@ -34,20 +34,19 @@ void sendToWheelMotor(int leftSpeed, int rightSpeed) {
     motor[RB] = rightSpeed;
 }
 
-void sendToLiftMotor(int speed) {
-    // motorReq[ClawLeft] = speed;
-    // motorReq[ClawRight] = speed;
-}
-
 void stopBotMovement() {
     sendToWheelMotor(0, 0);
+}
+
+void stopForkMovement() {
+    sendToForkMotor(0);
 }
 
 void rotateBot(int speed) {
     sendToWheelMotor(speed, -1 * speed);
 }
 
-void sendToLiftMotor(int speed) {
-
+void sendToForkMotor(int speed) {
+    motor[RT_LT2] = speed;
+    motor[LT_RT2] = speed;
 }
-

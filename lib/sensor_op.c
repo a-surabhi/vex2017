@@ -1,9 +1,9 @@
 int getWheelEncoderValue() {
-	// return SensorValue[RightWheelEncoder];
+	return SensorValue[WheelEncoder];
 }
 
-int getLiftArmPosition() {
-	// return SensorValue[ArmPotentiometer];
+int getForkPosition() {
+	return SensorValue[ForkPotentiometer];
 }
 
 int getOrientation() {
@@ -11,7 +11,7 @@ int getOrientation() {
 }
 
 void resetWheelEncoder() {
-	// SensorValue[RightWheelEncoder] = 0;
+	SensorValue[WheelEncoder] = 0;
 }
 
 int getJumperSetting() {
@@ -32,14 +32,12 @@ void resetGyroSensor() {
 
 void printSensorValuesToDebugWindow() {
 	int gyroPosition = getOrientation();
-	int armPosition = getArmPosition();
-	int clawPosition = getClawPosition();
-	int rightEncoder = getRightWheelEncoderValue();
+	int forkPosition = getForkPosition();
+	int wheelEncoder = getWheelEncoderValue();
 
 	writeDebugStreamLine("Gyro Sensor => %d", gyroPosition);
-	writeDebugStreamLine("Arm Sensor => %d", armPosition);
-	writeDebugStreamLine("Claw Sensor => %d", clawPosition);
-	writeDebugStreamLine("Right Encoder => %d", rightEncoder);
+	writeDebugStreamLine("Fork Sensor => %d", forkPosition);
+	writeDebugStreamLine("Wheel Encoder => %d", wheelEncoder);
 	writeDebugStreamLine("~~~~~~~~~~~~~~~~~~~~");
 	writeDebugStreamLine("");
 }

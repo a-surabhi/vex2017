@@ -4,7 +4,7 @@
 
 typedef enum {
 	MovementTask = 0,
-	ArmPositionTask = 3,
+	ForkPositionTask = 3,
 	OrientationTask = 4
 } TaskNames;
 
@@ -15,7 +15,7 @@ typedef enum {
 } DriveDirection;
 
 int _wheelEncoderTargetValue;
-int _armTargetPosition;
+int _forkTargetPosition;
 int _orientationTarget;
 int _initialOrientationPosition = 0;
 DriveDirection _driveDirection = None;
@@ -38,9 +38,9 @@ void _completeMovementTask() {
 	resetWheelEncoder();
 }
 
-void _completeArmPositionTask() {
-	stopArmMovement();
-	_activeTaskList[ArmPositionTask] = false;
+void _completeForkPositionTask() {
+	stopForkMovement();
+	_activeTaskList[ForkPositionTask] = false;
 }
 
 void _completeOrientationTask() {
@@ -48,32 +48,8 @@ void _completeOrientationTask() {
 	_activeTaskList[OrientationTask] = false;
 }
 
-void _ensureMoveStraight() {
-	// int currentOrientation = getOrientation();
-	// int delta = currentOrientation - _initialOrientationPosition;
-
-	// int rotateSpeedAdjust = abs(delta) > ORIENTATION_THRESHOLD ? sgn(delta) * 5 : 0;
-	// if (rotateSpeedAdjust != 0) {
-	// 	switch(direction) {
-	// 		case Forward: 
-	// 			sendToWheelMotor(WHEEL_MOTOR_SPEED, 0, rotateSpeedAdjust);
-	// 			break;
-	// 		case Backword:
-	// 			sendToWheelMotor(-1 * WHEEL_MOTOR_SPEED, 0, rotateSpeedAdjust);
-	// 			break;
-	// 		case TowardsLeft:
-	// 			sendToWheelMotor(0, -1 * WHEEL_MOTOR_SPEED, rotateSpeedAdjust);
-	// 			break;
-	// 		case TowardsRight:
-	// 			sendToWheelMotor(0, WHEEL_MOTOR_SPEED, rotateSpeedAdjust);
-	// 			break;
-	// 	}
-	// }
-}
-
 void _ensureMovementTaskDone() {
 	if (_activeTaskList[MovementTask]) {
-		_ensureMoveStraight();
 		int wheelEncoder = getWheelEncoderValue();
 		if ((_wheelEncoderTargetValue > 0 && wheelEncoder > _wheelEncoderTargetValue) ||
 			(_wheelEncoderTargetValue < 0 && wheelEncoder < _wheelEncoderTargetValue)) {
@@ -82,12 +58,12 @@ void _ensureMovementTaskDone() {
 	}
 }
 
-void _ensureArmPositionTaskDone() {
-	if (_activeTaskList[ArmPositionTask]) {
-		int armPosition = getArmPosition();
-		int delta = armPosition - _armTargetPosition;
-		if ((_armTargetPosition == ARM_FLOOR_POSITION && delta > 0) || (_armTargetPosition == ARM_CEILING_POSITION && delta < 0)) {
-			_completeArmPositionTask();
+void _ensureForkPositionTaskDone() {
+	if (_activeTaskList[ForkPositionTask]) {
+		int forkPosition = getForkPosition();
+		int delta = forkPosition - _forkTargetPosition;
+		if ((_forkTargetPosition == FORK_FLOOR_POSITION && delta > 0) || (_forkTargetPosition == FORK_CEILING_POSITION && delta < 0)) {
+			_completeForkPositionTask();
 		}
 	}
 }
@@ -113,9 +89,7 @@ void _ensureOrientationTaskDone() {
 void sync() {
 	while (!_isAllTaskDone()) {
 		_ensureMovementTaskDone();
-		_ensureClawPositionTaskDone();
-		_ensureClawTighteningTaskDone();
-		_ensureArmPositionTaskDone();
+		_ensureForkPositionTaskDone();
 		_ensureOrientationTaskDone();
 
 		wait1Msec(10);
@@ -127,14 +101,16 @@ void syncAndWait(int milliseconds) {
 	wait1Msec(milliseconds);
 }
 
-void dropArmToFloor() {
-	_activeTaskList[ArmPositionTask] = true;
-	_armTargetPosition = ARM_FLOOR_POSITION;
+void dropForkToFloor() {
+	_activeTaskList[ForkPositionTask] = true;
+	_forkTargetPosition = FORK_FLOOR_POSITION;
+	sendToForkMotor(FORK_MOTOR_SPEED);
 }
 
-void raiseArmToCeiling() {
-	_activeTaskList[ArmPositionTask] = true;
-	_armTargetPosition = ARM_CEILING_POSITION;
+void raiseForkToCeiling() {
+	_activeTaskList[ForkPositionTask] = true;
+	_forkTargetPosition = FORK_CEILING_POSITION;
+	sendToForkMotor(-1 * FORK_MOTOR_SPEED);
 }
 
 int _convertToEncoderValueFromDistance(float distance) {
@@ -149,7 +125,7 @@ void _initiateBotMovement(int distance, DriveDirection direction) {
 	_driveDirection = direction;
 
 	switch(direction) {
-		case Forward: 
+		case Forward:
 			sendToWheelMotor(WHEEL_MOTOR_SPEED, WHEEL_MOTOR_SPEED);
 			_wheelEncoderTargetValue = -1 * encoderValue;
 			break;
