@@ -135,7 +135,85 @@ task triggerAutonomous() {
 
 task autonomous()
 {
-    runAutonomous(true);
+    //runAutonomous(true);
+
+    liftArm();
+    botForward();
+    wait1Msec(2000);
+
+    stopArm();
+    wait1Msec(3000);
+
+    dropFork();
+    wait1Msec(2000);
+
+    stopFork();
+    wait1Msec(2000);
+
+    botStop();
+    liftFork();
+    wait1Msec(2000);
+
+    botRotate();
+    wait1Msec(1500);
+
+    botStop();
+    wait1Msec(100);
+
+    botForward();
+    wait1Msec(5000);
+
+    botStop();
+    dropFork();
+    wait1Msec(2000);
+    
+    stopFork();
+}
+
+function liftArm() {
+    motor[RT_LT2] = 80;
+    motor[LT_RT2] = 80;
+}
+
+function stopArm() {
+    motor[RT_LT2] = 0;
+    motor[LT_RT2] = 0;    
+}
+
+function botForward() {
+    motor[LF] = 80;
+    motor[LB] = 80;
+    motor[RF] = 80;
+    motor[RB] = 80;
+}
+
+function botStop() {
+    motor[LF] = 0;
+    motor[LB] = 0;
+    motor[RF] = 0;
+    motor[RB] = 0;
+}
+
+function botRotate() {
+    motor[LF] = 50;
+    motor[LB] = 50;
+    motor[RF] = -50;
+    motor[RB] = -50;
+}
+
+function dropFork() {
+    motor[MGI] = 80;
+    motor[MGI1] = 80;
+}
+
+function stopFork() {
+    motor[MGI] = 0;
+    motor[MGI1]= 0;
+}
+
+function liftFork() {
+    motor[MGI] = -127;
+    motor[MGI1]= -127;
 }
 
 /*---------------------------------------------------------------------------*/
