@@ -133,6 +133,52 @@ task triggerAutonomous() {
     signalAutonCompleted();
 }
 
+void liftArm() {
+    motor[RT_LT2] = 80;
+    motor[LT_RT2] = 80;
+}
+
+void stopArm() {
+    motor[RT_LT2] = 0;
+    motor[LT_RT2] = 0;
+}
+
+void botForward() {
+    motor[LF] = 80;
+    motor[LB] = 80;
+    motor[RF] = 80;
+    motor[RB] = 80;
+}
+
+void botStop() {
+    motor[LF] = 0;
+    motor[LB] = 0;
+    motor[RF] = 0;
+    motor[RB] = 0;
+}
+
+void botRotate() {
+    motor[LF] = 50;
+    motor[LB] = 50;
+    motor[RF] = -50;
+    motor[RB] = -50;
+}
+
+void dropFork() {
+    motor[MGI] = 80;
+    motor[MGI1] = 80;
+}
+
+void stopFork() {
+    motor[MGI] = 0;
+    motor[MGI1]= 0;
+}
+
+void liftFork() {
+    motor[MGI] = -127;
+    motor[MGI1]= -127;
+}
+
 task autonomous()
 {
     //runAutonomous(true);
@@ -154,6 +200,7 @@ task autonomous()
     liftFork();
     wait1Msec(2000);
 
+    stopFork();
     botRotate();
     wait1Msec(1500);
 
@@ -166,54 +213,8 @@ task autonomous()
     botStop();
     dropFork();
     wait1Msec(2000);
-    
+
     stopFork();
-}
-
-function liftArm() {
-    motor[RT_LT2] = 80;
-    motor[LT_RT2] = 80;
-}
-
-function stopArm() {
-    motor[RT_LT2] = 0;
-    motor[LT_RT2] = 0;    
-}
-
-function botForward() {
-    motor[LF] = 80;
-    motor[LB] = 80;
-    motor[RF] = 80;
-    motor[RB] = 80;
-}
-
-function botStop() {
-    motor[LF] = 0;
-    motor[LB] = 0;
-    motor[RF] = 0;
-    motor[RB] = 0;
-}
-
-function botRotate() {
-    motor[LF] = 50;
-    motor[LB] = 50;
-    motor[RF] = -50;
-    motor[RB] = -50;
-}
-
-function dropFork() {
-    motor[MGI] = 80;
-    motor[MGI1] = 80;
-}
-
-function stopFork() {
-    motor[MGI] = 0;
-    motor[MGI1]= 0;
-}
-
-function liftFork() {
-    motor[MGI] = -127;
-    motor[MGI1]= -127;
 }
 
 /*---------------------------------------------------------------------------*/
