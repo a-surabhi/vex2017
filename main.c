@@ -133,21 +133,23 @@ task triggerAutonomous() {
     signalAutonCompleted();
 }
 
-void liftArm() {
-    motor[RT_LT2] = 80;
-    motor[LT_RT2] = 80;
+//speed -80
+void liftArm(int speed) {
+    motor[RT_LT2] = speed;
+    motor[LT_RT2] = speed;
 }
 
-void stopArm() {
-    motor[RT_LT2] = 0;
-    motor[LT_RT2] = 0;
+void stopArm(int speed) {
+    motor[RT_LT2] = speed;
+    motor[LT_RT2] = speed;
 }
 
-void botForward() {
-    motor[LF] = 80;
-    motor[LB] = 80;
-    motor[RF] = 80;
-    motor[RB] = 80;
+//speed 80
+void botDrive(int speed) {
+    motor[LF] = speed;
+    motor[LB] = speed;
+    motor[RF] = speed;
+    motor[RB] = speed;
 }
 
 void botStop() {
@@ -157,16 +159,18 @@ void botStop() {
     motor[RB] = 0;
 }
 
-void botRotate() {
-    motor[LF] = 50;
-    motor[LB] = 50;
-    motor[RF] = -50;
-    motor[RB] = -50;
+//speed 50
+void botRotate(int speed) {
+    motor[LF] = speed;
+    motor[LB] = speed;
+    motor[RF] = -speed;
+    motor[RB] = -speed;
 }
 
-void dropFork() {
-    motor[MGI] = 80;
-    motor[MGI1] = 80;
+//speed 80
+void dropFork(int speed) {
+    motor[MGI] = speed;
+    motor[MGI1] = speed;
 }
 
 void stopFork() {
@@ -174,47 +178,84 @@ void stopFork() {
     motor[MGI1]= 0;
 }
 
-void liftFork() {
-    motor[MGI] = -127;
-    motor[MGI1]= -127;
+//speed -127
+void liftFork(int speed) {
+    motor[MGI] = speed;
+    motor[MGI1]= speed;
 }
 
 task autonomous()
 {
     //runAutonomous(true);
-
-    liftArm();
-    botForward();
-    wait1Msec(2000);
-
-    stopArm();
-    wait1Msec(3000);
-
-    dropFork();
-    wait1Msec(2000);
-
-    stopFork();
-    wait1Msec(2000);
-
+//drive forward 20", lift arm, stop Arm
+    liftArm(-127);
+    botDrive(80);
+    wait1Msec(800);
+    stopArm(-20);
     botStop();
-    liftFork();
-    wait1Msec(2000);
-
+    wait1Msec(200);
+//Move MGI down
+ dropFork(-88)
+  wait1Msec(650);
+ // botStop();
+//stop bot and MGI
+ stopFork();
+ wait1Msec(700);
+  botDrive(70);
+  wait1Msec(700);
+  botStop();
+  wait1Msec(1000);
+//Lift MGI
+   liftFork(80);
+   wait1Msec(2000);
+//Rotate bot, bot stop
     stopFork();
-    botRotate();
+    wait1Msec(1000);
+    botDrive(-100);
+    wait1Msec(1000);
+    botRotate(60);
+    wait1Msec(900);
+    botStop();
+    wait1Msec(200);
+    botDrive(100);
+    wait1Msec(440);
+    botStop();
+    wait1Msec(200);
+    botRotate(60);
+    wait1Msec(610);
+    botStop();
+    wait1Msec(200);
+    botDrive(100);
     wait1Msec(1500);
-
     botStop();
-    wait1Msec(100);
-
-    botForward();
-    wait1Msec(5000);
-
-    botStop();
-    dropFork();
-    wait1Msec(2000);
-
+    wait1Msec(200);
+    dropFork(-88);
+    wait1Msec(650);
     stopFork();
+    wait1Msec(200);
+    botDrive(120);
+    wait1Msec(600);
+    botStop();
+    wait1Msec(200);
+    botDrive(-120);
+    wait1Msec(2000);
+    botStop();
+    wait1Msec(200);
+
+
+
+//Drive forward
+     //botDrive(60);
+    //wait1Msec(1500);
+//Rotate left
+//Drive forward
+//Drop MGI
+//Drive back
+   // botStop();
+   // dropFork(55);
+   // wait1Msec(2000);
+
+   // stopFork();
 }
 
 /*---------------------------------------------------------------------------*/
